@@ -1,6 +1,6 @@
-/*
-// $Id: dhcping.c,v 1.1 2001/08/24 00:36:50 mavetju Exp $
-*/
+//
+// $Id: dhcping.c,v 1.2 2002/01/26 14:09:36 mavetju Exp $
+//
 
 /*
  * Copyright (c) Atos-Origin MS GS Messaging
@@ -249,14 +249,14 @@ void dhcp_packet(int type,char *ipaddr,char *opt50,char *gwaddr,char *hardware) 
     sscanf(gwaddr,"%d.%d.%d.%d",&gw[0],&gw[1],&gw[2],&gw[3]);
     if (opt50)
 	sscanf(opt50,"%d.%d.%d.%d",&ip50[0],&ip50[1],&ip50[2],&ip50[3]);
-    bzero(&hw,sizeof(hw));
+    memset(&hw,0,sizeof(hw));
     hwcount=sscanf(hardware,"%x:%x:%x:%x:%x:%x:%x:%x:%x:%x:%x:%x:%x:%x:%x:%x",
 	&hw[0],&hw[1],&hw[2],&hw[3],
 	&hw[4],&hw[5],&hw[6],&hw[7],
 	&hw[8],&hw[9],&hw[10],&hw[11],
 	&hw[12],&hw[13],&hw[14],&hw[15]);
 
-    bzero(msgbuf,sizeof(msgbuf));
+    memset(msgbuf,0,sizeof(msgbuf));
     sprintf(msgbuf,"\1\1%c%c",hwcount,0);
     addpacket(pktbuf,msgbuf,4);
 
@@ -269,23 +269,23 @@ void dhcp_packet(int type,char *ipaddr,char *opt50,char *gwaddr,char *hardware) 
     addpacket(pktbuf,msgbuf,4);
 
     /* secs and flags */
-    bzero(msgbuf,4);
+    memset(msgbuf,0,4);
     addpacket(pktbuf,msgbuf,4);
 /*  sprintf(msgbuf,"%c%c",0x80,0x00); */
 /*  sprintf(msgbuf,"%c%c",0x00,0x00); */
 /*  addpacket(pktbuf,msgbuf,2); */
 
     /* ciaddr */
-    bzero(msgbuf,4);
+    memset(msgbuf,0,4);
     sprintf(msgbuf,"%c%c%c%c",ip[0],ip[1],ip[2],ip[3]);
     addpacket(pktbuf,msgbuf,4);
 
     /* yiaddr */
-    bzero(msgbuf,4);
+    memset(msgbuf,0,4);
     addpacket(pktbuf,msgbuf,4);
 
     /* siaddr */
-    bzero(msgbuf,4);
+    memset(msgbuf,0,4);
     addpacket(pktbuf,msgbuf,4);
 
     /* giaddr */
@@ -299,11 +299,11 @@ void dhcp_packet(int type,char *ipaddr,char *opt50,char *gwaddr,char *hardware) 
     addpacket(pktbuf,msgbuf,16);
 
     /* sname */
-    bzero(msgbuf,64);
+    memset(msgbuf,0,64);
     addpacket(pktbuf,msgbuf,64);
 
     /* file */
-    bzero(msgbuf,128);
+    memset(msgbuf,0,128);
     addpacket(pktbuf,msgbuf,128);
 
     /* options */
