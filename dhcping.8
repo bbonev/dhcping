@@ -1,0 +1,148 @@
+.Dd 14 April 2000
+.Dt DHCPING 8
+.Os ???
+.Sh NAME
+.Nm dhcping
+.Nd
+send a DHCP request to DHCP server
+.Sh SYNOPSIS
+.Nm
+.Op Fl v
+.Op Fl q
+.Op Fl i
+.Op Fl r
+.Fl t Ar maxwait
+.Fl c Ar client-IP-address
+.Fl s Ar server-IP-address
+.Fl h Ar client-hardware-address
+.Op Fl g Ar gateway-IP-address
+.Sh DESCRIPTION
+This command allows the system administrator to check if a remote
+DHCP is still functioning.
+.Pp
+Options are:
+.Bl -tag -width aaaaa
+.It Fl v
+Verbose, print some information.
+.It Fl i
+Use DHCPINFORM packets.
+.It Fl r
+Use DHCPREQUEST packets. This is default behaviour.
+.It Fl q
+Quiet, print nothing to the screen.
+.It Fl t Ar maxwait
+Maximum time to wait for an answer in seconds.
+.It Fl c Ar client-IP-address
+Request this IP address. Note that this is the IP address the answer
+will be sent to.
+.It Fl s Ar server-IP-address
+Send the DHCP packet to this IP address.
+.It Fl h Ar client-hardware-address
+Use this hardware-address in the DHCP request. It can be up to
+sixteen octets seperated by colons (i.e. 01:02:03:04)
+.It Fl g Ar gateway-IP-address
+Use this IP address for the gateway IP address in the DHCP packet.
+This option is broken currently.
+.El
+
+.Sh RETURN VALUES
+All commands return 0 if everything went fine, 1 otherwise.
+
+.Sh SETUP
+This program should be installed setuid root or ran by root only.
+See SECURITY for more information.
+.Pp
+On your DHCP server, add these lines to the dhcpd.conf:
+.nf
+	host <your monitoring host FQDN> {
+		hardware ethernet       <your monitor host mac address>;
+		fixed-address           <your monitoring host IP address>;
+	}
+.fi
+
+Then try it:
+.Pp
+$ dhcping -c
+.Ar your monitoring host IP address
+-s
+.Ar your DHCP server IP address
+-h
+.Ar your monitor host mac address
+.Pp
+It will either respond with "no answer" or "Got answer from:
+.Ar your DHCP server IP address
+"
+
+The DHCP server logfile will give:
+.nf
+  DHCPREQUEST for 192.168.1.1 from 00:20:18:56:29:8f via ed0
+  DHCPACK on 192.168.1.1 to 00:20:18:56:29:8f via ed0
+  DHCPRELEASE of 192.168.1.1 from 00:20:18:56:29:8f via ed0 (found)
+.fi
+
+Running in DHCPINFORM mode with
+.Fl i
+:
+.Pp
+$ dhcping -c -i
+.Ar your monitoring host IP address
+-s
+.Ar your DHCP server IP address
+-h
+.Ar your monitor host mac address
+.Pp
+The DHCP server logfile will give:
+.nf
+  DHCPINFORM from 192.168.1.1 via ed0
+  DHCPACK to 192.168.1.1
+.fi
+
+If you see "DHCPINFORM from 192.168.1.1 via xl0: not authoritative
+for subnet 192.168.1.0", you should add the authoritative statement
+to the subnet, See dhcpd.conf(5) for details.
+
+.Pp
+When running in very verbose mode,
+.Nm
+tries to dump all data of the send and received DHCP packets. It
+will first dump the packet in hex-format, then decodes the header
+and finally the options.
+
+.Sh HOW IT WORKS
+The client either sends a DHCPREQUEST or DHCPINFORM packet to the
+server and waits for an answer. Then, if a DHCPREQUEST was send,
+it will send a DHCPRELEASE back to the server.
+
+.Sh SECURITY
+Because the program will often be used with setuid root permissions
+(to make sure that monitoring-scripts are able to use it) I've done
+my best to get rid of all buffer-overflows. The root privileges
+are dropped as soon as the program has bound itself to a port.
+
+.Sh BUGS
+.Bl -bullet
+.It
+Currently (this may, or may not, change in the future) the ISC DHCP
+daemon does not write leases with a fixed IP address in the
+dhcpd.leases file.
+.It
+DHCPINFORM packets can only be used on subnets the server is
+authoritative for. If the monitoring script runs on a subnet the
+server isn't authoritative for, it should use the DHCPREQUEST
+packets. I also experienced some problems with ISC DHCPD v2 servers,
+but that is also in the README of it.
+.It
+The 
+.Fl V
+option is still working, but shouldn't be used for debugging of
+the packets. Better use dhcpdump(8) for that, which is available
+on my website. I wanted to remove it, but decided only to do it
+from the documentation, not from the code. Maybe I'll need it one
+day for debugging.
+.El
+
+.Sh AUTHOR
+Edwin Groothuis, edwin@mavetju.org (http://www.mavetju.org)
+
+.Sh SEE ALSO
+dhcpd(8), dhclient(8), dhcpd.conf(5), dhcpdump(8)

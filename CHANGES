@@ -1,0 +1,8 @@
+$Id: CHANGES,v 1.1 2001/08/24 00:36:50 mavetju Exp $
+
+version 1.1
+	- Added DHCPINFORM option with help from Peter Marschall
+	  <peter.marschall@mayn.de>
+
+version 1.0
+	- initial release
