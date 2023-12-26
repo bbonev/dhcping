@@ -2,16 +2,15 @@ $Id: FILES,v 1.2 2002/01/27 02:18:36 mavetju Exp $
 
 General
 -------
-CHANGES         - Change log
-CONTACT         - How to contact me
 FILES           - This file
+README.md       - Current information about the project
 LICENSE         - License under which this software is distributed
+CHANGES         - Old change log
+CONTACT         - Original author contact information
 
 Source-file
 -----------
-dhcp_options.h  - Tables with dhcp-packet-field values and their
-                  readable descriptions
-dhcping.8       - Man-page, obtained from dhcping.pod
+dhcp_options.h  - Tables with dhcp-packet-field values and their readable descriptions
 dhcping.c       - The source-file
 dhcping.pod     - The original man-file
 Makefile        - Simple build system
