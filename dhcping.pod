@@ -58,7 +58,7 @@ Send the DHCP packet to this IP address.
 =item B<-h> I<client-hardware-address>
 
 Use this hardware-address in the DHCP request. It can be up to
-sixteen octets seperated by colons (i.e. 01:02:03:04)
+sixteen octets separated by colons (i.e. 01:02:03:04)
 
 =item B<-g> I<gateway-IP-address>
 
