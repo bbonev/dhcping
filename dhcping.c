@@ -45,7 +45,7 @@
 #define BUF_SIZ 256*256
 
 int offset=0;
-void addpacket(char *pktbuf,char *msgbuf,int size) {
+void addpacket(unsigned char *pktbuf,char *msgbuf,int size) {
     memcpy(pktbuf+offset,msgbuf,size);
     offset+=size;
 }
@@ -236,9 +236,10 @@ void dhcp_inform(char *ipaddr,char *gwaddr,char *hardware) {
 
 void dhcp_packet(int type,char *ipaddr,char *opt50,char *gwaddr,char *hardware) {
     static time_t l=0;
-    unsigned char msgbuf[BUF_SIZ];
+    char msgbuf[BUF_SIZ];
     unsigned char pktbuf[BUF_SIZ];
-    int ip[4],gw[4],hw[16],ip50[4];
+    int ip[4],gw[4],ip50[4];
+    unsigned hw[16];
     int hwcount;
 
     sscanf(ipaddr,"%d.%d.%d.%d",&ip[0],&ip[1],&ip[2],&ip[3]);
@@ -253,7 +254,7 @@ void dhcp_packet(int type,char *ipaddr,char *opt50,char *gwaddr,char *hardware) 
 	&hw[12],&hw[13],&hw[14],&hw[15]);
 
     memset(msgbuf,0,sizeof(msgbuf));
-    sprintf(msgbuf,"\1\1%c%c",hwcount,0);
+    sprintf((char *)msgbuf,"\1\1%c%c",hwcount,0);
     addpacket(pktbuf,msgbuf,4);
 
     /* xid */
