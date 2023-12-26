@@ -70,7 +70,7 @@ unsigned char serveridentifier[4];
 int maxwait=3;
 
 void doargs(int argc,char **argv) {
-    char ch;
+    int ch;
 
     inform=request=verbose=VERBOSE=quiet=0;
     ci=gi=server="0.0.0.0";
