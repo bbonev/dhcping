@@ -29,6 +29,10 @@ Options are:
 
 Verbose, print some information.
 
+=item B<-V>
+
+Very verbose, print a lot of information.
+
 =item B<-i>
 
 Use DHCPINFORM packets.
