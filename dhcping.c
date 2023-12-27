@@ -1,7 +1,3 @@
-//
-// $Id: dhcping.c,v 1.3 2002/01/27 01:57:15 mavetju Exp $
-//
-
 /*
  * Copyright 2000, 2001, 2002 by Edwin Groothuis, edwin@mavetju.org
  *
