@@ -9,12 +9,13 @@ B<dhcping> - send a DHCP request to DHCP server to see if it's up and running
 =head1 SYNOPSIS
 
 B<dhcping>
-[B<-v>] [B<-q>] [B<-i>] [B<-r>] [B<-n>]
-B<-t> I<maxwait>
-B<-c> I<client-IP-address>
+[B<-v>] [B<-q>] [B<-r>|B<-i>] [B<-n>]
+[B<-t> I<maxwait>]
+[B<-c> I<client-IP-address>]
 B<-s> I<server-IP-address>
-B<-h> I<client-hardware-address>
+[B<-h> I<client-hardware-address>]
 [B<-g> I<gateway-IP-address>]
+[I<interface>]
 
 =head1 DESCRIPTION
 
@@ -68,6 +69,10 @@ sixteen octets separated by colons (i.e. 01:02:03:04)
 
 Use this IP address for the gateway IP address in the DHCP packet.
 This option is currently broken.
+
+=item I<interface>
+
+Interface to use (e.g. "eth0")
 
 =back
 

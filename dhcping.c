@@ -33,6 +33,7 @@
 #include <sys/time.h>
 #include <sys/uio.h>
 #include <netinet/in.h>
+#include <net/if.h>
 #include <unistd.h>
 #include <netdb.h>
 #include <stdio.h>
@@ -65,9 +66,14 @@ struct sockaddr_in dhcp_to;
 int _serveripaddress;
 
 int inform,request,verbose,quiet,norelease;
-char *ci,*gi,*server,*hw;
+char *ci,*gi,*server,*hw,*iface;
 unsigned char serveridentifier[4];
 int maxwait=3;
+
+static void usage(void) {
+    printf("dhcping [-c ciaddr] [-g giaddr] [-h chaddr] [-r|-i] [-n] -s server [-t maxwait] [-v] [-q] [<interface>]\n");
+    exit(1);
+}
 
 void doargs(int argc,char **argv) {
     int ch;
@@ -76,10 +82,10 @@ void doargs(int argc,char **argv) {
     ci=gi="0.0.0.0";
     server="255.255.255.255";
     hw="00:00:00:00:00:00";
+    iface=NULL;
 
     if (argc==1) {
-	printf("dhcping -c ciaddr -g giaddr -h chaddr -r -s server -t maxwait -i -n -v -q\n");
-	exit(1);
+	usage();
     }
 
     while ((ch = getopt(argc,argv,"c:g:h:iqrs:t:vn"))>0) {
@@ -101,6 +107,10 @@ void doargs(int argc,char **argv) {
 	fprintf(stderr,"Error: -r and -i are mutally exclusive.\n");
 	exit(1);
     }
+
+    if (argc-optind>1) usage();
+
+    if (argc>optind) iface=argv[optind];
 
     // DHCPREQUEST is by default.
     if (!inform) request=1;
@@ -211,6 +221,13 @@ void dhcp_setup(char *serveripaddress) {
     if (setsockopt(dhcp_socket,SOL_SOCKET,SO_BROADCAST,(char *)&flag, sizeof flag) < 0) {
 	perror ("dhcp_socket/setsockopt: SO_BROADCAST");
 	exit(1);
+    }
+
+    if (iface) {
+	if (setsockopt(dhcp_socket,SOL_SOCKET,SO_BINDTODEVICE, iface, strnlen(iface, IFNAMSIZ)) < 0) {
+	    perror ("dhcp_socket/setsockopt: SO_BINDTODEVICE");
+	    exit(1);
+	}
     }
 
     if ((clientent=getservbyname("bootpc",0))==NULL) {
