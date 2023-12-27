@@ -27,11 +27,7 @@ Options are:
 
 =item B<-v>
 
-Verbose, print some information.
-
-=item B<-V>
-
-Very verbose, print a lot of information.
+Verbose, print some information. More -v's will increase verbosity.
 
 =item B<-i>
 

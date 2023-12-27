@@ -64,7 +64,7 @@ struct sockaddr_in dhcp_to;
 
 int _serveripaddress;
 
-int inform,request,verbose,VERBOSE,quiet;
+int inform,request,verbose,quiet;
 char *ci,*gi,*server,*hw;
 unsigned char serveridentifier[4];
 int maxwait=3;
@@ -72,7 +72,7 @@ int maxwait=3;
 void doargs(int argc,char **argv) {
     int ch;
 
-    inform=request=verbose=VERBOSE=quiet=0;
+    inform=request=verbose=quiet=0;
     ci=gi="0.0.0.0";
     server="255.255.255.255";
     hw="00:00:00:00:00:00";
@@ -82,7 +82,7 @@ void doargs(int argc,char **argv) {
 	exit(1);
     }
 
-    while ((ch = getopt(argc,argv,"c:g:h:iqrs:t:vV"))>0) {
+    while ((ch = getopt(argc,argv,"c:g:h:iqrs:t:v"))>0) {
 	switch (ch) {
 	case 'c': ci=optarg;break;
 	case 'g': gi=optarg;break;
@@ -92,8 +92,7 @@ void doargs(int argc,char **argv) {
 	case 'r': request=1;break;
 	case 's': server=optarg;break;
 	case 't': maxwait=atoi(optarg);break;
-	case 'v': verbose=1;break;
-	case 'V': VERBOSE=1;break;
+	case 'v': verbose++;break;
 	}
     }
 
@@ -119,7 +118,7 @@ int main(int argc,char **argv) {
 
     doargs(argc,argv);
 
-    if (VERBOSE) puts("setup");
+    if (verbose>1) puts("setup");
     dhcp_setup(server);
 
     if (setuid(getuid())!=0) {
@@ -129,11 +128,11 @@ int main(int argc,char **argv) {
     }
 
     if (inform) {
-	if (VERBOSE) puts("inform");
+	if (verbose>1) puts("inform");
 	dhcp_inform(ci,gi,hw);
     }
     if (request) {
-	if (VERBOSE) puts("request");
+	if (verbose>1) puts("request");
 	dhcp_request(ci,gi,hw);
     }
 
@@ -147,11 +146,11 @@ int main(int argc,char **argv) {
 	    exit(0);
 	}
 	if (FD_ISSET(dhcp_socket,&read)) {
-	    if (VERBOSE) puts("read");
+	    if (verbose>1) puts("read");
 	    /* If a expected packet was found, then also release it. */
 	    if ((foundpacket=dhcp_read())!=0) {
 		if (request) {
-		    if (VERBOSE) puts("release");
+		    if (verbose>1) puts("release");
 		    dhcp_release(ci,gi,hw);
 		}
 	    }
@@ -162,7 +161,7 @@ int main(int argc,char **argv) {
 	    foundpacket=1;
 	}
     }
-    if (VERBOSE) puts("close");
+    if (verbose>1) puts("close");
     dhcp_close();
     return returnvalue;
 }
@@ -394,10 +393,10 @@ int dhcp_read(void) {
 void dhcp_dump(unsigned char *buffer,int size) {
     int j;
 
-    if (VERBOSE)
+    if (verbose>0)
 	printf("packet %d bytes\n",size);
 
-    if (!VERBOSE)
+    if (verbose<2)
 	return;
 
     //
