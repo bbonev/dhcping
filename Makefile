@@ -24,10 +24,10 @@ dhcping.8: dhcping.pod Makefile
 		--center "User Contributed Software" \
 		dhcping.pod dhcping.8
 
-dhcping: dhcping.o
+dhcping: dhcping.o Makefile
 	${CC} ${LDFLAGS} -o $@ dhcping.o ${LIBS}
 
-dhcping.o: dhcping.c dhcp_options.h Makefile
+dhcping.o: dhcping.c dhcp_options.h version.h Makefile
 	${CC} ${CFLAGS} -c -o $@ dhcping.c
 
 VER:=$(shell grep 'define VERSION' version.h|tr -d '\"'|awk '{print $$3}')
