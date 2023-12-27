@@ -9,7 +9,7 @@ B<dhcping> - send a DHCP request to DHCP server to see if it's up and running
 =head1 SYNOPSIS
 
 B<dhcping>
-[B<-v>] [B<-q>] [B<-i>] [B<-r>]
+[B<-v>] [B<-q>] [B<-i>] [B<-r>] [B<-n>]
 B<-t> I<maxwait>
 B<-c> I<client-IP-address>
 B<-s> I<server-IP-address>
@@ -36,6 +36,10 @@ Use DHCPINFORM packets.
 =item B<-r>
 
 Use DHCPREQUEST packets (default behaviour).
+
+=item B<-n>
+
+Do not release the lease after requesting it (depends on B<-r> option)
 
 =item B<-q>
 
@@ -113,7 +117,10 @@ options.
 
 The client either sends a DHCPREQUEST or DHCPINFORM packet to the
 server and waits for an answer. Then, if a DHCPREQUEST was send,
-it will send a DHCPRELEASE back to the server.
+it will send a DHCPRELEASE back to the server,
+unless the -n option is passed. This can be used to eliminate the need
+for a full-fledged DHCP client on links where the IP address is essentially
+static, but the ISP requires the use of DHCP to keep the routing alive.
 
 =head1 SECURITY
 

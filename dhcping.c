@@ -64,7 +64,7 @@ struct sockaddr_in dhcp_to;
 
 int _serveripaddress;
 
-int inform,request,verbose,quiet;
+int inform,request,verbose,quiet,norelease;
 char *ci,*gi,*server,*hw;
 unsigned char serveridentifier[4];
 int maxwait=3;
@@ -72,17 +72,17 @@ int maxwait=3;
 void doargs(int argc,char **argv) {
     int ch;
 
-    inform=request=verbose=quiet=0;
+    inform=request=verbose=quiet=norelease=0;
     ci=gi="0.0.0.0";
     server="255.255.255.255";
     hw="00:00:00:00:00:00";
 
     if (argc==1) {
-	printf("dhcping -c ciaddr -g giaddr -h chaddr -r -s server -t maxwait -i -v -q\n");
+	printf("dhcping -c ciaddr -g giaddr -h chaddr -r -s server -t maxwait -i -n -v -q\n");
 	exit(1);
     }
 
-    while ((ch = getopt(argc,argv,"c:g:h:iqrs:t:v"))>0) {
+    while ((ch = getopt(argc,argv,"c:g:h:iqrs:t:vn"))>0) {
 	switch (ch) {
 	case 'c': ci=optarg;break;
 	case 'g': gi=optarg;break;
@@ -93,6 +93,7 @@ void doargs(int argc,char **argv) {
 	case 's': server=optarg;break;
 	case 't': maxwait=atoi(optarg);break;
 	case 'v': verbose++;break;
+	case 'n': norelease=1;break;
 	}
     }
 
@@ -103,6 +104,11 @@ void doargs(int argc,char **argv) {
 
     // DHCPREQUEST is by default.
     if (!inform) request=1;
+
+    if (!request && norelease) {
+	fprintf(stderr,"Error: -n needs -r option to make sense.\n");
+	exit(1);
+    }
 }
 
 int main(int argc,char **argv) {
@@ -149,7 +155,7 @@ int main(int argc,char **argv) {
 	    if (verbose>1) puts("read");
 	    /* If a expected packet was found, then also release it. */
 	    if ((foundpacket=dhcp_read())!=0) {
-		if (request) {
+		if (request && !norelease) {
 		    if (verbose>1) puts("release");
 		    dhcp_release(ci,gi,hw);
 		}
