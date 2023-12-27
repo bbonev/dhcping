@@ -371,7 +371,7 @@ int dhcp_read(void) {
 	    );
     }
 
-    if (_serveripaddress!=addr) {
+    if (_serveripaddress!=addr&&!!~_serveripaddress) {
 	if (!quiet)
 	    fprintf(stderr,"received from %d.%d.%d.%d, expected from %d.%d.%d.%d\n",
 		( addr >> 24 ) & 0xFF, ( addr >> 16 ) & 0xFF,
