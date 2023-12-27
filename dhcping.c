@@ -51,6 +51,7 @@
 #include <string.h>
 #include <time.h>
 
+#include "version.h"
 #include "dhcp_options.h"
 
 #define BUF_SIZ 256*256
@@ -84,8 +85,10 @@ char *ci,*gi,*server,*hw,*iface,*opt82mac,*opt60;
 unsigned char serveridentifier[4];
 int maxwait=3;
 
-static void usage(void) {
-	printf("dhcping [-c ciaddr] [-g giaddr] [-h chaddr] [-r|-i] [-n] -s server [-t maxwait] [-v] [-q] [<interface>]\n");
+static void usage(const char *name) {
+	printf("dhcping version "VERSION"\n");
+	printf("Usage:\n");
+	printf("%s [-c ciaddr] [-g giaddr] [-h chaddr] [-r|-i] [-n] -s server [-t maxwait] [-v] [-q] [<interface>]\n",name);
 	exit(1);
 }
 
@@ -99,7 +102,7 @@ void doargs(int argc,char **argv) {
 	iface=NULL;
 
 	if (argc==1) {
-		usage();
+		usage(argv[0]);
 	}
 
 	while ((ch=getopt(argc,argv,"c:g:h:iqrefladns:t:o:p:vn"))>0) {
@@ -164,7 +167,7 @@ void doargs(int argc,char **argv) {
 	}
 
 	if (argc-optind>1)
-		usage();
+		usage(argv[0]);
 
 	if (argc>optind)
 		iface=argv[optind];
