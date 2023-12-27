@@ -73,7 +73,8 @@ void doargs(int argc,char **argv) {
     int ch;
 
     inform=request=verbose=VERBOSE=quiet=0;
-    ci=gi=server="0.0.0.0";
+    ci=gi="0.0.0.0";
+    server="255.255.255.255";
     hw="00:00:00:00:00:00";
 
     if (argc==1) {
